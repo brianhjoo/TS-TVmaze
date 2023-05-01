@@ -12851,7 +12851,7 @@ function getShowsByTerm(term) {
                                 id: s.show.id,
                                 name: s.show.name,
                                 summary: s.show.summary,
-                                image: ((_a = s.show.image) === null || _a === void 0 ? void 0 : _a.original) || 'https://tinyurl.com/tv-missing'
+                                image: ((_a = s.show.image) === null || _a === void 0 ? void 0 : _a.original) || "https://tinyurl.com/tv-missing",
                             });
                         })];
             }
@@ -12904,7 +12904,20 @@ $searchForm.on("submit", function (evt) {
 /** Given a show ID, get from API and return (promise) array of episodes:
  *      { id, name, season, number }
  */
-// async function getEpisodesOfShow(id) { }
+function getEpisodesOfShow(id) {
+    return __awaiter(this, void 0, void 0, function () {
+        var resp, episodes;
+        return __generator(this, function (_a) {
+            switch (_a.label) {
+                case 0: return [4 /*yield*/, axios_1.default.get("".concat(BASE_URL, "/shows/").concat(id, "/episodes"))];
+                case 1:
+                    resp = _a.sent();
+                    episodes = resp.data;
+                    return [2 /*return*/];
+            }
+        });
+    });
+}
 /** Write a clear docstring for this function... */
 // function populateEpisodes(episodes) { }
 
