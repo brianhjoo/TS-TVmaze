@@ -5,6 +5,8 @@ const $showsList: JQuery = $("#showsList");
 const $episodesArea: JQuery = $("#episodesArea");
 const $episodesList: JQuery = $("#episodesList");
 const $searchForm: JQuery = $("#searchForm");
+const $show: JQuery = $(".Show");
+const episodesBtn = $('.Show-getEpisodes');
 
 const BASE_URL = "https://api.tvmaze.com";
 
@@ -76,6 +78,10 @@ function populateShows(shows: showInterface[]): void {
       `
     );
 
+    $show.on('click','.Show-getEpisodes', function() {
+      grabAndDisplayEpisodes()
+    });
+
     $showsList.append($show);
   }
 }
@@ -106,9 +112,11 @@ async function getEpisodesOfShow(id: number): Promise<episodeInterface[]> {
   const episodes = resp.data;
 
   console.log('episodes:', episodes);
+
+  return episodes;
 }
 
-/** Write a clear docstring for this function... */
+/** Write a clear docstring for this function... */ //FIXME: docstring
 
 function populateEpisodes(episodes: episodeInterface[]): void {
   const $episodes = episodes.map((e: episodeInterface): JQuery<HTMLElement> => {
@@ -118,4 +126,12 @@ function populateEpisodes(episodes: episodeInterface[]): void {
   $episodesList.append($episodes);
 
   $episodesArea.show();
+}
+
+
+/**  */
+async function grabAndDisplayEpisodes(id: number): Promise<void> {
+  const episodes: episodeInterface[] = await getEpisodesOfShow(id);
+
+  populateEpisodes(episodes);
 }
