@@ -3,6 +3,7 @@ import * as $ from "jquery";
 
 const $showsList: JQuery = $("#showsList");
 const $episodesArea: JQuery = $("#episodesArea");
+const $episodesList: JQuery = $("#episodesList");
 const $searchForm: JQuery = $("#searchForm");
 
 const BASE_URL = "https://api.tvmaze.com";
@@ -41,7 +42,6 @@ async function getShowsByTerm(term: string): Promise<showInterface[]> {
   // ADD: Remove placeholder & make request to TVMaze search shows API.
   const res = await axios.get(`${BASE_URL}/search/shows?q=${term}`);
   const shows: showFromAPI[] = res.data;
-  console.log(res.data);
 
   return shows.map((s: showFromAPI) => ({
     id: s.show.id,
@@ -104,8 +104,18 @@ $searchForm.on("submit", async function (evt) {
 async function getEpisodesOfShow(id: number): Promise<episodeInterface[]> {
   const resp = await axios.get(`${BASE_URL}/shows/${id}/episodes`);
   const episodes = resp.data;
+
+  console.log('episodes:', episodes);
 }
 
 /** Write a clear docstring for this function... */
 
-// function populateEpisodes(episodes) { }
+function populateEpisodes(episodes: episodeInterface[]): void {
+  const $episodes = episodes.map((e: episodeInterface): JQuery<HTMLElement> => {
+    return $(`<li>${e.name} (season ${e.season}, number ${e.number})</li>`)
+  });
+
+  $episodesList.append($episodes);
+
+  $episodesArea.show();
+}
