@@ -12834,22 +12834,26 @@ var $ = __webpack_require__(/*! jquery */ "./node_modules/jquery/dist/jquery.js"
 var $showsList = $("#showsList");
 var $episodesArea = $("#episodesArea");
 var $searchForm = $("#searchForm");
+var BASE_URL = "https://api.tvmaze.com";
 function getShowsByTerm(term) {
     return __awaiter(this, void 0, void 0, function () {
-        var res, shows, s;
+        var res, shows;
         return __generator(this, function (_a) {
             switch (_a.label) {
-                case 0: return [4 /*yield*/, axios_1.default.get("/search/shows?q=".concat(term))];
+                case 0: return [4 /*yield*/, axios_1.default.get("".concat(BASE_URL, "/search/shows?q=").concat(term))];
                 case 1:
                     res = _a.sent();
                     shows = res.data;
-                    s = shows.map(function (s) { return ({
-                        id: s.id,
-                        name: s.name,
-                        summary: s.summary,
-                        image: s.image || 'https://tinyurl.com/tv-missing'
-                    }); });
-                    return [2 /*return*/, s];
+                    console.log(res.data);
+                    return [2 /*return*/, shows.map(function (s) {
+                            var _a;
+                            return ({
+                                id: s.show.id,
+                                name: s.show.name,
+                                summary: s.show.summary,
+                                image: ((_a = s.show.image) === null || _a === void 0 ? void 0 : _a.original) || 'https://tinyurl.com/tv-missing'
+                            });
+                        })];
             }
         });
     });
