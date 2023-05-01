@@ -1,10 +1,11 @@
 import axios from "axios";
 import * as $ from 'jquery';
 
-const $showsList = $("#showsList");
-const $episodesArea = $("#episodesArea");
-const $searchForm = $("#searchForm");
+const $showsList: JQuery = $("#showsList");
+const $episodesArea: JQuery = $("#episodesArea");
+const $searchForm: JQuery = $("#searchForm");
 
+const BASE_URL = "https://api.tvmaze.com";
 
 /** Given a search term, search for tv shows that match that query.
  *
@@ -23,19 +24,18 @@ interface showInterface {
 
 async function getShowsByTerm(term: string): Promise<[showInterface]> {
   // ADD: Remove placeholder & make request to TVMaze search shows API.
-  const res = await axios.get(`/search/shows?q=${term}`);
+  const res = await axios.get(`${BASE_URL}/search/shows?q=${term}`);
   const shows = res.data;
+  console.log(res.data);
 
-  const s = shows.map((s: showInterface) => (
+  return shows.map((s: {show}) => (
     {
-      id: s.id,
-      name: s.name,
-      summary: s.summary,
-      image: s.image || 'https://tinyurl.com/tv-missing'
+      id: s.show.id,
+      name: s.show.name,
+      summary: s.show.summary,
+      image: s.show.image?.original || 'https://tinyurl.com/tv-missing'
     }
-  ));
-
-  return s;
+  ));;
 }
 
 
@@ -72,9 +72,9 @@ function populateShows(shows: [showInterface]): void {
  *    Hide episodes area (that only gets shown if they ask for episodes)
  */
 
-async function searchForShowAndDisplay() {
-  const term = $("#searchForm-term").val();
-  const shows = await getShowsByTerm(term);
+async function searchForShowAndDisplay(): Promise<void> {
+  const term = $("#searchForm-term").val() as string;
+  const shows: [showInterface] = await getShowsByTerm(term);
 
   $episodesArea.hide();
   populateShows(shows);
