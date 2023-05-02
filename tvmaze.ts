@@ -78,10 +78,7 @@ function populateShows(shows: showInterface[]): void {
       `
     );
 
-    $show.on('click','.Show-getEpisodes', function() {
-      grabAndDisplayEpisodes()
-    });
-
+    $show.on('click','.Show-getEpisodes', grabAndDisplayEpisodes);
     $showsList.append($show);
   }
 }
@@ -109,7 +106,7 @@ $searchForm.on("submit", async function (evt) {
 
 async function getEpisodesOfShow(id: number): Promise<episodeInterface[]> {
   const resp = await axios.get(`${BASE_URL}/shows/${id}/episodes`);
-  const episodes = resp.data;
+  const episodes: episodeInterface[] = resp.data;
 
   console.log('episodes:', episodes);
 
@@ -119,19 +116,29 @@ async function getEpisodesOfShow(id: number): Promise<episodeInterface[]> {
 /** Write a clear docstring for this function... */ //FIXME: docstring
 
 function populateEpisodes(episodes: episodeInterface[]): void {
-  const $episodes = episodes.map((e: episodeInterface): JQuery<HTMLElement> => {
-    return $(`<li>${e.name} (season ${e.season}, number ${e.number})</li>`)
-  });
+  console.log("Populate episodes with episodes = ", episodes);
+  for (const e of episodes){
+    $episodesList.append(`<li>${e.name} (season ${e.season}, number ${e.number})</li>`);
+  }
+  console.log("episodesList = ", $episodesList);
+  // const $episodes: JQuery<HTMLElement>[] = episodes.map((e: episodeInterface): void => {
+  //   $episodesList.append(`<li>${e.name} (season ${e.season}, number ${e.number})</li>`);
+    // return $(`<li>${e.name} (season ${e.season}, number ${e.number})</li>`);
+  // });
 
-  $episodesList.append($episodes);
-
-  $episodesArea.show();
+  // $episodesList.append($episodes);
 }
 
 
 /**  */
-async function grabAndDisplayEpisodes(id: number): Promise<void> {
+async function grabAndDisplayEpisodes(): Promise<void> {
+  $episodesList.empty();
+
+  const id: number = Number($show.data("show-id"));
+  console.log(id);
   const episodes: episodeInterface[] = await getEpisodesOfShow(id);
 
   populateEpisodes(episodes);
+  $episodesArea.show();
 }
+
